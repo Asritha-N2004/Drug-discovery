@@ -1,0 +1,161 @@
+export type User = { id: number; name: string; email: string; role: string };
+export type InventoryRow = {
+  id: number;
+  product_id: number;
+  location_id: number;
+  sku: string;
+  product_name: string;
+  category: string;
+  location_name: string;
+  location_type: string;
+  region: string;
+  quantity_on_hand: number;
+  quantity_reserved: number;
+  quantity_available: number;
+  safety_stock: number;
+  reorder_level: number;
+  version: number;
+  status: string;
+  value: number;
+};
+export type Location = {
+  id: number;
+  location_name: string;
+  location_type: string;
+  region: string;
+  storage_capacity: number;
+  fulfillment_capacity: number;
+  on_hand: number;
+  utilization: number;
+};
+export type Product = {
+  id: number;
+  sku: string;
+  product_name: string;
+  category: string;
+  unit_cost: number;
+  selling_price: number;
+};
+export type Agent = {
+  id: string;
+  name: string;
+  role: string;
+  status: string;
+  tasks_completed: number;
+  last_execution: Execution | null;
+};
+export type Execution = {
+  id: number;
+  agent_name: string;
+  execution_id: string;
+  status: string;
+  input_summary: Record<string, unknown>;
+  output_summary: Record<string, unknown>;
+  error_message: string | null;
+  execution_duration: number;
+  created_at: string;
+  confidence: number | null;
+};
+export type Run = {
+  id: string;
+  run_name: string;
+  status: string;
+  total_allocated: number;
+  total_cost: number;
+  objective_value: number;
+  stockout_risk: number;
+  created_at: string;
+  error: string | null;
+  results: {
+    baseline_shortage?: number;
+    optimized_shortage?: number;
+    stockout_reduction?: number;
+    estimated_savings?: number;
+    solver?: string[];
+  };
+};
+export type Recommendation = {
+  id: number;
+  product_name: string;
+  sku: string;
+  source: string;
+  destination: string;
+  sales_channel: string;
+  allocated_quantity: number;
+  estimated_cost: number;
+  before: number;
+  after: number;
+  reason: string;
+  eta_hours: number;
+};
+export type Forecast = {
+  product_id: number;
+  location_id: number;
+  channel: string;
+  predicted_demand: number;
+  lower_bound: number;
+  upper_bound: number;
+  model_name: string;
+  confidence_score: number;
+  mae: number;
+  wape: number;
+  horizon: number;
+  forecast_date: string;
+};
+export type Summary = {
+  total_products: number;
+  total_inventory: number;
+  total_warehouses: number;
+  total_stores: number;
+  online_inventory: number;
+  offline_inventory: number;
+  low_stock: number;
+  overstock: number;
+  stockout_risk: number;
+  inventory_turnover: number;
+  forecast_accuracy: number | null;
+  estimated_savings: number;
+  inventory_value: number;
+};
+export type Page<T> = {
+  items: T[];
+  total: number;
+  page: number;
+  page_size: number;
+};
+export type Notification = {
+  id: number;
+  title: string;
+  severity: string;
+  read: boolean;
+  created_at: string;
+};
+export type Transfer = {
+  id: number;
+  product_name: string;
+  source: string;
+  destination: string;
+  quantity: number;
+  status: string;
+  estimated_cost: number;
+  eta_hours: number;
+};
+export type Sim = {
+  id: string;
+  scenario: string;
+  created_at: string;
+  results: {
+    initial_inventory: number;
+    scenario_inventory: number;
+    simulated_demand: number;
+    baseline_shortage: number;
+    optimized_shortage: number;
+    baseline_cost: number;
+    optimized_cost: number;
+    stockout_reduction: number;
+    estimated_savings: number;
+    total_allocated: number;
+    agent_decisions: Record<string, unknown>;
+    recommendations: Recommendation[];
+  };
+};

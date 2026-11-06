@@ -1,0 +1,13 @@
+# Optimization methodology
+
+For product p, source s and destination d, integer x[p,s,d] is the transferred quantity. Transferable stock = on_hand − reserved − safety_stock. Destination need = max(0, ceil(forecast + safety × configured multiplier) − available). Shared storage and per-run fulfillment headroom bound receipts across products.
+
+SciPy MILP minimizes transportation + fulfillment + incremental holding/reallocation cost minus avoided weighted shortage penalty. Default per-unit cost is distance × .002 + .40 transportation, .15 fulfillment/reallocation and configured holding cost. Distance uses latitude/longitude Euclidean approximation ×111 km; ETA uses 45 km/h plus 4 handling hours. These are configurable synthetic cost assumptions, not carrier quotes. Online need receives a configurable priority multiplier. Explanations include protected source reservations and forecast targets.
+
+Products are solved in deterministic product-ID order, updating residual shared storage and fulfillment capacities. Each product's transportation subproblem is optimized; the complete network is a feasible sequential heuristic, not a claim of a globally optimal coupled multi-product solution. Source selection is warehouse/distribution center; store/online destinations receive stock. Manual proposals can move between any active locations and use the same validator.
+
+If MILP returns no successful solution, a deterministic greedy algorithm orders beneficial routes by net cost and stable IDs. The solver field records the method actually used. Zero inventory, zero demand and capacity exhaustion return valid zero-movement plans. No safety stock is manufactured; shortages remain explicit when supply is insufficient.
+
+Validation cumulatively applies the proposal to a copy of inventory, protecting integer quantities, source safety stock, reservations, valid locations, total storage and per-run fulfillment caps. Approval repeats this validation on locked current rows. Forecast moving averages and exponential smoothing are lightweight defaults; linear regression and seeded random forests are available. Last four weekly observations are held out sequentially with no future leakage. Confidence is an error-derived decision score, and intervals are approximate uncertainty bands rather than calibrated probabilities.
+
+Reported shortages include forecast plus safety target gaps. Savings are modeled shortage-cost avoidance less movement/holding costs. They are estimates, not realized profit. Turnover is annual sales/current stock because historical daily inventory snapshots are not present. Overstock alerts use five times reorder level. Scenarios modify copied forecasts/supply; supplier delay is a documented reduced-availability proxy.
